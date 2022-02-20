@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Product } from 'src/models/products';
 
 @Injectable()
@@ -21,9 +26,12 @@ export class ProductsService {
   }
 
   findOne(id: number) {
-    return this.products.find((item) => item.id === id);
+    const product = this.products.find((item) => item.id === id);
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
+    return product;
   }
-
   create(payload: any) {
     this.counterId = this.counterId + 1;
     const newProduct = {
@@ -31,13 +39,15 @@ export class ProductsService {
       ...payload,
     };
     this.products.push(newProduct);
+    return newProduct;
   }
   update(id: number, payload: Product) {
     const productFound = this.products.findIndex((item) => item.id === id);
     let message = '';
     if (productFound > 0) {
       this.products[productFound] = {
-        id: id,
+        id,
+        ...this.products[productFound],
         ...payload,
       };
       message = 'Product updated';
@@ -48,14 +58,11 @@ export class ProductsService {
   }
 
   delete(id: number) {
-    const productFound = this.products.findIndex((item) => item.id === id);
-    let message = '';
-    if (productFound > 0) {
-      this.products.splice(productFound, 1);
-      message = 'product deleted';
-    } else {
-      message = 'product not found';
+    const index = this.products.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new HttpException('Error no se encontro', HttpStatus.BAD_REQUEST);
     }
-    return message;
+    this.products.splice(index, 1);
+    return true;
   }
 }

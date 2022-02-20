@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpCode,
   Res,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductsService } from 'src/services/products/products.service';
@@ -23,24 +24,24 @@ export class ProductsController {
   }
 
   @Get(':productId')
-  @HttpCode(HttpStatus.ACCEPTED) // 👈 Using decorator
-  getOne(@Res() response: Response, @Param('productId') productId: string) {
-    const result = this._productsService.findOne(Number(productId));
+  @HttpCode(HttpStatus.ACCEPTED)
+  getOne(@Res() response: Response, @Param('id', ParseIntPipe) id: number) {
+    const result = this._productsService.findOne(id);
     response.status(200).send(result);
   }
 
   @Post()
   create(@Body() payload: any) {
-    this._productsService.create(payload);
+    return this._productsService.create(payload);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() payload: any) {
-    return this._productsService.update(Number(id), payload);
+  update(@Param('id', ParseIntPipe) id: number, @Body() payload: any) {
+    return this._productsService.update(id, payload);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
+  delete(@Param('id', ParseIntPipe) id: number) {
     return this._productsService.delete(Number(id));
   }
 }
