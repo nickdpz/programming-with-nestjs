@@ -15,7 +15,8 @@ export class ProductsService {
     },
   ];
 
-  findAll() {
+  findAll(limit: number, offset: number) {
+    console.log(`${limit} - ${offset}`);
     return this.products;
   }
 

@@ -18,12 +18,8 @@ import { ProductsService } from 'src/services/products/products.service';
 export class ProductsController {
   constructor(private _productsService: ProductsService) {}
   @Get()
-  list(
-    @Query('limit') limit = 100,
-    @Query('offset') offset = 0,
-    @Query('brand') brand: string,
-  ) {
-    return this._productsService.findAll();
+  list(@Query('limit') limit = 100, @Query('offset') offset = 0) {
+    return this._productsService.findAll(limit, offset);
   }
 
   @Get(':productId')
