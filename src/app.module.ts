@@ -7,6 +7,7 @@ import { ProductsController } from './controllers/products/products.controller';
 import { OrdersController } from './controllers/orders/orders.controller';
 import { UsersController } from './controllers/users/users.controller';
 import { CustomersController } from './controllers/customers/customers.controller';
+import { ProductsService } from './services/products/products.service';
 
 @Module({
   imports: [ConfigModule.forRoot({ envFilePath: '.env' })],
@@ -18,6 +19,6 @@ import { CustomersController } from './controllers/customers/customers.controlle
     UsersController,
     CustomersController,
   ],
-  providers: [AppService],
+  providers: [AppService, ProductsService],
 })
 export class AppModule {}

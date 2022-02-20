@@ -12,48 +12,39 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { ProductsService } from 'src/services/products/products.service';
 
 @Controller('products')
 export class ProductsController {
+  constructor(private _productsService: ProductsService) {}
   @Get()
   list(
     @Query('limit') limit = 100,
     @Query('offset') offset = 0,
     @Query('brand') brand: string,
   ) {
-    return `products limit=> ${limit} offset=> ${offset} brand=> ${brand}`;
-  }
-
-  @Get('filter')
-  getProductFilter() {
-    return `yo soy un filter`;
+    return this._productsService.findAll();
   }
 
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED) // 👈 Using decorator
   getOne(@Res() response: Response, @Param('productId') productId: string) {
-    response.status(200).send({ productId });
+    const result = this._productsService.findOne(Number(productId));
+    response.status(200).send(result);
   }
 
   @Post()
   create(@Body() payload: any) {
-    console.log(payload);
-    return {
-      message: 'accion de crear',
-      payload,
-    };
+    this._productsService.create(payload);
   }
 
   @Put(':id')
   update(@Param('id') id: number, @Body() payload: any) {
-    return {
-      id,
-      payload,
-    };
+    return this._productsService.update(Number(id), payload);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return id;
+    return this._productsService.delete(Number(id));
   }
 }
