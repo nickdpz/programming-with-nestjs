@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Product } from 'src/models/products';
+import { CreateProduct, UpdateProduct } from '../../schemas/products';
 
 @Injectable()
 export class ProductsService {
@@ -32,7 +33,7 @@ export class ProductsService {
     }
     return product;
   }
-  create(payload: any) {
+  create(payload: CreateProduct) {
     this.counterId = this.counterId + 1;
     const newProduct = {
       id: this.counterId,
@@ -41,7 +42,7 @@ export class ProductsService {
     this.products.push(newProduct);
     return newProduct;
   }
-  update(id: number, payload: Product) {
+  update(id: number, payload: UpdateProduct) {
     const productFound = this.products.findIndex((item) => item.id === id);
     let message = '';
     if (productFound > 0) {
