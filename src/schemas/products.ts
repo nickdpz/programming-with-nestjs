@@ -29,6 +29,7 @@ export class CreateProduct {
 
   @IsNotEmpty()
   @Matches(/(https:\/\/)[a-zA-Z0-9_-]{2,20}/)
+  @IsUrl()
   readonly image: string;
 }
 
