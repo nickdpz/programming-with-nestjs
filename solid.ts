@@ -153,7 +153,7 @@ class Kiwi implements Bird {
 }
 
 // The interface segregation principle states that no client should be forced to depend on methods it does not use. By putting too many properties in our interfaces, we risk breaking the above rule.
-
+// Mantener interfaces finas y usar en composición cuando sea necesario
 interface CanFly {
   fly(): void;
 }
@@ -179,3 +179,72 @@ class KiwiISP implements CanWalk {
 
 // D
 // Dependency inversion principle
+// Los módulos de alto nivel no deben depender de los de bajo nivel (de las implementaciones), ambos deben depender de abstracciones.
+// Las abstracciones no deben depender de los detalles, los detalles deben depender de las abstracciones.
+// Alto nivel debe tener la lógica de negocio. Bajo nivel implementación de funcionalidades
+
+interface Person {
+  introduceSelf(): void;
+}
+class Engineer implements Person {
+  public introduceSelf() {
+    console.log('I am an engineer');
+  }
+}
+
+class Musician implements Person {
+  public introduceSelf() {
+    console.log('I am a musician');
+  }
+}
+
+interface IntroductionService {
+  introduce(): void;
+}
+
+class EngineerIntroductionService implements IntroductionService {
+  public introduce() {
+    console.log('I am an engineer');
+  }
+}
+
+class MusicianIntroductionService implements IntroductionService {
+  public introduce() {
+    console.log('I am an engineer');
+  }
+}
+
+class Engineer_ implements Person {
+  private introductionService = new EngineerIntroductionService();
+  public introduceSelf() {
+    this.introductionService.introduce();
+  }
+}
+
+class EngineerDIP implements Person {
+  public introductionService: EngineerIntroductionService;
+
+  constructor(introductionService: IntroductionService) {
+    this.introductionService = introductionService;
+  }
+
+  public introduceSelf() {
+    this.introductionService.introduce();
+  }
+}
+
+const engineerDIP = new EngineerDIP(new EngineerIntroductionService());
+
+class PersonDIP {
+  public introductionService: IntroductionService;
+
+  constructor(introductionService: IntroductionService) {
+    this.introductionService = introductionService;
+  }
+  public introduceSelf() {
+    this.introductionService.introduce();
+  }
+}
+
+const engineerDIP2 = new PersonDIP(new EngineerIntroductionService());
+const musician = new PersonDIP(new MusicianIntroductionService());
